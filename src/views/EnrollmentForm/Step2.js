@@ -56,18 +56,17 @@ const styles = theme => ({
  */
 class Step2 extends React.Component {
 	state = {
-    // keeps track of which Expansion Panel is expanded, with a Benefit name
+		// keeps track of which Expansion Panel is expanded, with a Benefit name
 		expanded: null
 	};
 
 	handleBenefitChange = (benefitName, variableBenefitChange) => {
-		// how the state will be changed	
+		// how the state will be changed
 		this.setState({
 			expanded: benefitName
-    });
-    
-    variableBenefitChange(benefitName);
+		});
 
+		variableBenefitChange(benefitName);
 	};
 
 	render() {
@@ -76,48 +75,52 @@ class Step2 extends React.Component {
 		return (
 			<Consumer>
 				{context => {
-					const { selectedBenefit, benefitList } = context.benefits.variableBenefits;
+					const {
+						selectedBenefit,
+						benefitList
+					} = context.benefits.variableBenefits;
 					return (
 						<div className={classes.root}>
 							<Typography variant="h5" className={classes.heading}>
 								<strong>Choose one of the five options below:</strong>
 							</Typography>
 
-							{benefitList.map(
-								(benefit, benefitIndex) => (
-									<ExpansionPanel
-										expanded={this.state.expanded === benefit.name}
-										key={benefit.name}
+							{benefitList.map((benefit, benefitIndex) => (
+								<ExpansionPanel
+									expanded={this.state.expanded === benefit.name}
+									key={benefit.name}
+								>
+									<ExpansionPanelSummary
+										classes={{ content: classes.content }}
 									>
-										<ExpansionPanelSummary
-											classes={{ content: classes.content }}
-										>
-											<span className={classes.benefitDescription}>
-												<Radio
-													checked={
-														selectedBenefit === benefit.name
-													}
-													onChange={()=>this.handleBenefitChange(benefit.name, context.variableBenefitChange)}
-													value={benefit.name}
-													name={benefit.name}
-													color="primary"
-												/>
-												<Typography>{benefit.name}</Typography>
-											</span>
-											<span className={classes.benefitIllustration}>
-												{benefit.illustration}
-											</span>
-										</ExpansionPanelSummary>
-
-										<ExpansionPanelDetails>
-											<BenefitOptions
-												options={benefit.options}
-												benefitIndex={benefitIndex}
+										<span className={classes.benefitDescription}>
+											<Radio
+												checked={selectedBenefit === benefit.name}
+												onChange={() =>
+													this.handleBenefitChange(
+														benefit.name,
+														context.variableBenefitChange
+													)
+												}
+												value={benefit.name}
+												name={benefit.name}
+												color="primary"
 											/>
-										</ExpansionPanelDetails>
-									</ExpansionPanel>
-								)
-							)}
+											<Typography>{benefit.name}</Typography>
+										</span>
+										<span className={classes.benefitIllustration}>
+											{benefit.illustration}
+										</span>
+									</ExpansionPanelSummary>
+
+									<ExpansionPanelDetails>
+										<BenefitOptions
+											options={benefit.options}
+											benefitIndex={benefitIndex}
+										/>
+									</ExpansionPanelDetails>
+								</ExpansionPanel>
+							))}
 						</div>
 					);
 				}}
