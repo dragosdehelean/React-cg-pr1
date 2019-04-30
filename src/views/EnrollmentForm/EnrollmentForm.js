@@ -1,5 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+
+import { Provider } from "../../components/Context";
+import benefits from "./../../components/Context/benefits";
+
 // @material-ui/core components
 import {
 	withStyles,
@@ -10,10 +14,9 @@ import {
 	Tab
 } from "@material-ui/core";
 
-import Step1 from './Step1';
-import Step2 from './Step2';
-import Step3 from './Step3';
-
+import Step1 from "./Step1";
+import Step2 from "./Step2";
+import Step3 from "./Step3";
 
 const paperLength = 798;
 
@@ -29,7 +32,7 @@ const styles = theme => ({
 		position: "relative"
 	},
 	header: {
-		padding: theme.spacing.unit * 5,
+		padding: theme.spacing.unit * 5
 	},
 	steps: {
 		width: paperLength / steps.length,
@@ -63,7 +66,7 @@ const styles = theme => ({
 		display: "flex",
 		justifyContent: "flex-end"
 	},
-	button: {	
+	button: {
 		marginLeft: theme.spacing.unit
 	}
 });
@@ -82,22 +85,21 @@ const steps = [
 	{ stepName: "Review Options", stepComponent: "Step3", stepId: "review" }
 ];
 
-
 class EnrollmentForm extends React.Component {
-	
 	state = {
 		activeStep: 0,
 		// sliding tab animation
 		movingTabStyle: {
 			transform: "translate3d(-8px, 0px, 0)",
 			transition: "all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)"
-		}
+		},
+		benefits: benefits,
 	};
 
 	/**
 	 *  Generates the MAIN VIEW
 	 */
-	getStepContent = (step) => {
+	getStepContent = step => {
 		switch (step) {
 			case 0:
 				return <Step1 />;
@@ -108,29 +110,28 @@ class EnrollmentForm extends React.Component {
 			default:
 				throw new Error("Unknown step");
 		}
-	}
+	};
 
 	/**
-	 *  Handler for bottom form buttons 
+	 *  Handler for bottom form buttons
 	 */
-	handleButtonClick = (direction) => {		
-		// 1) next button and is not the final view		
-		if(direction > 0 && this.state.activeStep !== (steps.length-1)){	
-			 // moves tab and increments activeStep
-			this.navigationStepChange(this.state.activeStep + 1)
-		} 
-		// 2) back button   
-		else if( direction < 0 && this.activeStep !== 0 ){
+	handleButtonClick = direction => {
+		// 1) next button and is not the final view
+		if (direction > 0 && this.state.activeStep !== steps.length - 1) {
+			// moves tab and increments activeStep
+			this.navigationStepChange(this.state.activeStep + 1);
+		}
+		// 2) back button
+		else if (direction < 0 && this.activeStep !== 0) {
 			// moves tab and decrements activeStep
-			this.navigationStepChange(this.state.activeStep - 1)
-		} 
-	}
+			this.navigationStepChange(this.state.activeStep - 1);
+		}
+	};
 
 	/**
 	 * Handles Navigation between Tabs
 	 */
 	navigationStepChange = index => {
-
 		// case for first step
 		let move_distance = -8;
 
@@ -150,18 +151,53 @@ class EnrollmentForm extends React.Component {
 		this.setState({ movingTabStyle: movingTabStyle, activeStep: index });
 	};
 
+	 /**
+	  *  Handles the selection of a new Provider inside an Option set corresponding to a Benefit
+	  */
+	 variableBenefitProviderChange = (benefitIndex, optionIndex, provider) => {
+		this.setState( prevState => {
+			prevState.benefits.variableBenefits.benefitList[benefitIndex].options[optionIndex].selectedProvider = provider;
+			// console.log(prevState)
+			return {benefits: prevState.benefits}
+		})
+	 }
+
+	 /**
+	  *  Handles the selection of a new Variable Benefit
+	  */
+	 variableBenefitChange = (benefitName)=>{
+		this.setState(prevState => {
+			// changes the selectedBenefit
+			prevState.benefits.variableBenefits.selectedBenefit = benefitName;
+
+			// deselects all options from other Variable Benefits other than the current one			
+			prevState.benefits.variableBenefits.benefitList = prevState.benefits.variableBenefits.benefitList.map( benefit => ({...benefit, options: benefit.options.map(option=> ({...option, selectedProvider: null}) )}));
+
+			return { benefits: prevState.benefits}
+		})
+	 }
+
 	render() {
 		const { classes } = this.props;
 		const { activeStep } = this.state;
 		const activeTabStyle = { style: { backgroundColor: "#FFFFFF" } };
 
 		return (
-			<React.Fragment>
+			<Provider value={{
+				benefits: this.state.benefits,
+				variableBenefitChange: this.variableBenefitChange,
+				variableBenefitProviderChange: this.variableBenefitProviderChange,
+			}}>
 				<main className={classes.layout}>
 					<Paper className={classes.paper}>
-						<Typography component="h1" variant="h4" align="center" className={classes.header}>
+						<Typography
+							component="h1"
+							variant="h4"
+							align="center"
+							className={classes.header}
+						>
 							<strong>Benefits Enrollment</strong>
-						</Typography>						
+						</Typography>
 
 						{/* NAVIGATION TABS */}
 
@@ -210,15 +246,14 @@ class EnrollmentForm extends React.Component {
 								</React.Fragment>
 							) : (
 								<React.Fragment>
-
 									{/* MAIN VIEW */}
 
-									{ this.getStepContent(activeStep) }
+									{this.getStepContent(activeStep)}
 
 									<div className={classes.buttons}>
 										{activeStep !== 0 && (
 											<Button
-												onClick={() => this.handleButtonClick(-1) }
+												onClick={() => this.handleButtonClick(-1)}
 												className={classes.button}
 											>
 												Back
@@ -227,7 +262,7 @@ class EnrollmentForm extends React.Component {
 										<Button
 											variant="contained"
 											color="primary"
-											onClick={ () => this.handleButtonClick(1) }
+											onClick={() => this.handleButtonClick(1)}
 											className={classes.button}
 										>
 											{activeStep === steps.length - 1
@@ -240,7 +275,7 @@ class EnrollmentForm extends React.Component {
 						</React.Fragment>
 					</Paper>
 				</main>
-			</React.Fragment>
+			</Provider>
 		);
 	}
 }
