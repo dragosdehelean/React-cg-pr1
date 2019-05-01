@@ -15,7 +15,7 @@ const benefits = {
 				name: "1. Only Gas Tickets (150 RON)",
 				options: [
 					{
-						name: "Gas Tickets Providers",
+						name: "Gas Tickets Provider",
 						providers: ["MOL", "Rompetrol"],
 						selectedProvider: null
 					}
@@ -39,7 +39,7 @@ const benefits = {
 				name: "3. Only Private Pension (150 RON)",
 				options: [
 					{
-						name: "Private Pension Providers",
+						name: "Private Pension Provider",
 						providers: ["Certinvest", "BCR"],
 						selectedProvider: null
 					}
@@ -53,12 +53,12 @@ const benefits = {
 				name: "4. Gas Tickets (90 RON) and Private Pension (60 RON)",
 				options: [
 					{
-						name: "Gas Tickets Providers",
+						name: "Gas Tickets Provider",
 						providers: ["MOL", "Rompetrol"],
 						selectedProvider: null
 					},
 					{
-						name: "Private Pension Providers",
+						name: "Private Pension Provider",
 						providers: ["Certinvest", "BCR"],
 						selectedProvider: null
 					}
@@ -84,7 +84,7 @@ const benefits = {
 						selectedProvider: null
 					},
 					{
-						name: "Private Pension Providers",
+						name: "Private Pension Provider",
 						providers: ["Certinvest", "BCR"],
 						selectedProvider: null
 					}
