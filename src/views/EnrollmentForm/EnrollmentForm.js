@@ -1,5 +1,10 @@
+/**
+ * Holds all the logic of the 3 steps form
+ * 
+ * 
+ */
+
 import React from "react";
-import PropTypes from "prop-types";
 
 import { Provider } from "../../components/Context";
 import benefits from "./../../components/Context/benefits";
@@ -134,7 +139,7 @@ class EnrollmentForm extends React.Component {
 	navigationStepChange = index => {
 		// case for first step
 		let move_distance = -8;
-
+		// 
 		if (index !== 0 && index === steps.length) {
 			// case for last step
 			move_distance = index * (paperLength / steps.length) + 10;
@@ -166,6 +171,7 @@ class EnrollmentForm extends React.Component {
 	  *  Handles the selection of a new Variable Benefit
 	  */
 	 variableBenefitChange = (benefitName)=>{
+		
 		this.setState(prevState => {
 			// changes the selectedBenefit
 			prevState.benefits.variableBenefits.selectedBenefit = benefitName;
