@@ -5,80 +5,94 @@ import {
 	withStyles,
 	Typography,
 	Grid,
-   Radio,
-   Avatar
+	List,
+	ListItem,
+	ListItemText
 } from "@material-ui/core";
 
-import apple from './../../assets/img/apple-icon.png';
+const products = [
+  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
+  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
+  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
+  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
+  { name: 'Shipping', desc: '', price: 'Free' },
+];
+const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
+const payments = [
+  { name: 'Card type', detail: 'Visa' },
+  { name: 'Card holder', detail: 'Mr John Smith' },
+  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
+  { name: 'Expiry date', detail: '04/2024' },
+];
+
 
 const styles = theme => ({
-	root: {
-      padding: theme.spacing.unit * 5,
+  root: {
+		padding: "40px 24px 0"
 	},
 	optionCell: {
 		textAlign: "center"
 	},
-   medicalProvider: {
-      margin: "auto",
-      width: 100,
-      height: 100,
-   }
+	medicalProvider: {
+		margin: "auto",
+		width: 100,
+		height: 100
+	}
 });
 
-class Step3 extends React.Component {
-	state = {
-		selectedValue: null
-	};
-
-	handleChange = ev => {
-		// some implementation
-		this.setState({ selectedValue: ev.target.value });
-	};
-
-	render() {
-      const { classes } = this.props;
-      
-      console.log(apple)
-
-		return (
-			<Grid container spacing={24} className={classes.root}>
-				<Grid item xs={12} >
-					<Typography variant="h6" gutterBottom>
-						Choose your Medical Service Provider
+const Step3 = ({ classes }) => {
+	return (
+		<React.Fragment>
+			<Typography variant="h6" gutterBottom>
+				Order summary
+			</Typography>
+			<List disablePadding>
+				{products.map(product => (
+					<ListItem className={classes.listItem} key={product.name}>
+						<ListItemText
+							primary={product.name}
+							secondary={product.desc}
+						/>
+						<Typography variant="body2">{product.price}</Typography>
+					</ListItem>
+				))}
+				<ListItem className={classes.listItem}>
+					<ListItemText primary="Total" />
+					<Typography variant="subtitle1" className={classes.total}>
+						$34.06
 					</Typography>
-				</Grid>
-
-				<Grid item xs={12} md={6} className={classes.optionCell}  >
-					
-               <Avatar alt="Regina Maria" src={apple} className={classes.medicalProvider} />
-               <Radio
-						checked={this.state.selectedValue === "a"}
-						onChange={this.handleChange}
-						value="a"
-						name="medical_services_provider"
-						aria-label="A"
-					/>
-				</Grid>
-
-				<Grid item xs={12} md={6} className={classes.optionCell}>					
-               <Avatar alt="Sanador" src="https://www.sanador.ro/wp-content/uploads/2018/12/logo_sanador.png.jpg" className={classes.medicalProvider} />
-               <Radio
-						checked={this.state.selectedValue === "b"}
-						onChange={this.handleChange}
-						value="b"
-						name="medical_services_provider"
-						aria-label="B"
-					/>
-				</Grid>
-
-				<Grid item xs={12}>
-               <Typography variant="subtitle1" gutterBottom>
-						Default option for Dental Services Provider
+				</ListItem>
+			</List>
+			<Grid container spacing={2}>
+				<Grid item xs={12} sm={6}>
+					<Typography variant="h6" gutterBottom className={classes.title}>
+						Shipping
 					</Typography>
+					<Typography gutterBottom>John Smith</Typography>
+					<Typography gutterBottom>{addresses.join(", ")}</Typography>
+				</Grid>
+				<Grid item container direction="column" xs={12} sm={6}>
+					<Typography variant="h6" gutterBottom className={classes.title}>
+						Payment details
+					</Typography>
+					<Grid container>
+						{payments.map(payment => (
+							<React.Fragment key={payment.name}>
+								<Grid item xs={6}>
+									<Typography gutterBottom>{payment.name}</Typography>
+								</Grid>
+								<Grid item xs={6}>
+									<Typography gutterBottom>
+										{payment.detail}
+									</Typography>
+								</Grid>
+							</React.Fragment>
+						))}
+					</Grid>
 				</Grid>
 			</Grid>
-		);
-	}
-}
+		</React.Fragment>
+	);
+};
 
 export default withStyles(styles)(Step3);

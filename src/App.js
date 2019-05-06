@@ -1,7 +1,7 @@
 import React from "react";
 import EnrollmentForm from "./views/EnrollmentForm/EnrollmentForm";
 
-import { Provider } from "./components/Context/EnrollContext";
+import { Provider } from "./context/EnrollContext";
 
 function App() {
   return (

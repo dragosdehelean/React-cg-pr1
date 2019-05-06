@@ -5,100 +5,102 @@
  *
  */
 
-import React from "react";
-import { Consumer } from "../../components/Context/EnrollContext";
-import BenefitOptions from "./BenefitOptions";
+import React, { useContext } from "react";
+import { EnrollContext, DispatchContext } from "../../context/EnrollContext";
+import OptionGroups from "../../components/EnrollmentForm/OptionGroups";
 import {
-  withStyles,
-  Typography,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  Radio
+	withStyles,
+	Typography,
+	ExpansionPanel,
+	ExpansionPanelSummary,
+	ExpansionPanelDetails,
+	Radio
 } from "@material-ui/core";
 
 /**
  * CSS
  */
 const styles = theme => ({
-  root: {
-    padding: "40px 24px 0"
-  },
-  heading: {
-    marginBottom: 20,
-    color: theme.palette.secondary.main
-  },
-  content: {
-    display: "flex",
-    alignItems: "center",
-    minHeight: 70,
-    color: theme.palette.secondary.main
-  },
-  benefitDescription: {
-    flex: "66.6666%",
-    display: "flex",
-    alignItems: "center"
-    // border: "1px solid red"
-  },
-  benefitIllustration: {
-    flex: "33.3333%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingRight: "0 !important"
-  }
+	root: {
+		padding: "40px 24px 0"
+	},
+	heading: {
+		marginBottom: 20,
+		color: theme.palette.secondary.main
+	},
+	content: {
+		display: "flex",
+		alignItems: "center",
+		minHeight: 70,
+		color: theme.palette.secondary.main
+	},
+	benefitDescription: {
+		flex: "66.6666%",
+		display: "flex",
+		alignItems: "center"
+		// border: "1px solid red"
+	},
+	benefitIllustration: {
+		flex: "33.3333%",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		paddingRight: "0 !important"
+	}
 });
 
 /**
  * MAIN COMPONENT
  */
-const Step2 = ({ classes }) => (
-  <Consumer>
-    {context => {
-      const {
-        selectedBenefit,
-        benefitList
-      } = context.benefits.variableBenefits;
+const Step2 = ({ classes }) => {
+	const { variableBenefits} = useContext(EnrollContext);
+	const {dispatch} = useContext(DispatchContext);
+	const { selectedBenefit, benefitsList } = variableBenefits;
 
-      return (
-        <div className={classes.root}>
-          <Typography variant="h5" className={classes.heading}>
-            <strong>Choose one of the five options below:</strong>
-          </Typography>
+	return (
+		<div className={classes.root}>
+			<Typography variant="h5" className={classes.heading}>
+				<strong>Choose one of the five options below:</strong>
+			</Typography>
 
-          {benefitList.map((benefit, benefitIndex) => (
-            <ExpansionPanel
-              expanded={selectedBenefit === benefit.name}
-              key={benefit.name}
-            >
-              <ExpansionPanelSummary classes={{ content: classes.content }}>
-                <span className={classes.benefitDescription}>
-                  <Radio
-                    checked={selectedBenefit === benefit.name}
-                    onChange={() => context.changeVariableBenefit(benefit.name)}
-                    value={benefit.name}
-                    name={benefit.name}
-                    color="primary"
-                  />
-                  <Typography>{benefit.name}</Typography>
-                </span>
-                <span className={classes.benefitIllustration}>
-                  {benefit.illustration}
-                </span>
-              </ExpansionPanelSummary>
+			{benefitsList.map((benefit, benefitIndex) => (
+				<ExpansionPanel
+					expanded={selectedBenefit === benefit.name}
+					key={benefit.name}
+				>
+					<ExpansionPanelSummary
+						classes={{ content: classes.content }}
+						onClick={() =>
+							dispatch({
+								type: "changeVariableBenefit",
+								benefitName: benefit.name
+							})
+						}
+					>
+						<span className={classes.benefitDescription}>
+							<Radio
+								checked={selectedBenefit === benefit.name}
+								value={benefit.name}
+								name="Variable benefits"
+								color="primary"
+							/>
+							<Typography>{benefit.text}</Typography>
+						</span>
+						<span className={classes.benefitIllustration}>
+							{benefit.illustration}
+						</span>
+					</ExpansionPanelSummary>
 
-              <ExpansionPanelDetails>
-                <BenefitOptions
-                  options={benefit.options}
-                  benefitIndex={benefitIndex}
-                />
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          ))}
-        </div>
-      );
-    }}
-  </Consumer>
-);
+					<ExpansionPanelDetails>
+						<OptionGroups
+							options={benefit.options}
+							benefitIndex={benefitIndex}
+						/>
+					</ExpansionPanelDetails>
+				</ExpansionPanel>
+			))}
+		</div>
+	);
+};
 
 export default withStyles(styles)(Step2);
